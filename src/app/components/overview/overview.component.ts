@@ -31,6 +31,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public serviceHints: { serviceName: string, timeEntriesSyncHint: SafeHtml }[];
 
   public isScheduled: boolean;
+  public errorCommunicatingWithCore = false;
   private _askedForScheduled: boolean;
 
   public isLastSuccessfullyDoneConfigToday: boolean;
@@ -46,6 +47,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._askedForScheduled = false;
+    this.errorCommunicatingWithCore = false;
 
     this.$_userSubscription = this._appData.user.subscribe(user => {
       this.user = user;
@@ -77,6 +79,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           } else {
             this.user.status = 'inactive';
           }
+          this.errorCommunicatingWithCore = false;
 
           this._appData.setUser(this.user);
         }, (error) => {
@@ -126,6 +129,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       } else {
         this.user.status = 'inactive';
       }
+      this.errorCommunicatingWithCore = false;
 
       this._appData.setUser(this.user);
     }, (error) => {
@@ -142,6 +146,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.user.status = 'inactive';
         this.app.buildNotification('Jobs correctly stopped.');
       }
+      this.errorCommunicatingWithCore = false;
 
       this._appData.setUser(this.user);
     }, (error) => {
@@ -151,6 +156,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   private _jobRequestError() {
     this.isScheduled = false;
+    this.errorCommunicatingWithCore = true;
     this.user.status = 'inactive';
     this._appData.setUser(this.user);
     this.app.buildNotification('Some error occured when communicating with the sync server. Please try again after a while.');

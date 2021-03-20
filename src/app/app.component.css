@@ -1,6 +1,6 @@
 header {
   position: fixed;
-  height: calc(1.3em + 1.6vw);
+  height: calc(1.9em + 1.6vw);
   background: var(--header-color);
   z-index: 99;
   width: 100vw;

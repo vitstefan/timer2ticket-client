@@ -53,23 +53,24 @@ p {
 
 label {
   font-family: Montserrat, Arial, Sans Serif;
-  font-size: calc(0.7em + 1.05vw);
+  font-size: calc(1.05em + 0.85vw);
   color: var(--text-color);
 }
 
 label .mat-checkbox-label {
-  font-size: calc(0.6em + 0.3vw);
+  font-size: calc(0.7em + 0.15vw);
 }
 
 button, input, select {
   border-radius: 50px;
   font-family: Montserrat, Arial, Sans Serif;
-  font-size: calc(0.7em + 0.9vw);
+  font-size: calc(1.2em + 0.7vw);
   margin-top: 0.2em;
   margin-bottom: 1em;
   color: var(--text-color);
   transition: all .2s linear;
   padding: 0.5em;
+  min-height: 1.5em;
 }
 
 button {
@@ -86,6 +87,7 @@ button {
   align-items: center;
   gap: 0.5em;
   cursor: pointer;
+  min-height: 3.0em;
 }
 
 button:disabled {
@@ -127,13 +129,13 @@ select {
 
 .element-hint-below span {
   font-family: Montserrat, Arial, Sans Serif;
-  font-size: calc(0.5em + 0.6vw);
+  font-size: calc(0.65em + 0.6vw);
   text-align: center;
 }
 
 a {
   font-family: Montserrat, Arial, Sans Serif;
-  font-size: calc(0.8em + 0.85vw);
+  font-size: calc(0.9em + 0.85vw);
   text-decoration: none;
   text-align: center;
   height: unset;
@@ -146,11 +148,11 @@ a {
 .content-container {
   min-width: 100%;
   /* 100% minus header height */
-  min-height: calc(100% - (1.3em + 1.6vw));
+  min-height: calc(100% - (1.9em + 1.6vw));
   display: flex;
   justify-content: center;
-  /* at least same as header => height: calc(1.3em + 1.6vw); */
-  padding-top: calc(2.8em + 1.6vw);
+  /* at least same as header => height: calc(1.9em + 1.6vw); */
+  padding-top: calc(3.4em + 1.6vw);
 }
 
 .content-centered {
@@ -185,7 +187,7 @@ form label {
 .above-h1-text {
   font-family: Montserrat Light, Arial, sans-serif;
   color: var(--text-color);
-  padding-top: calc(1.3em + 1.6vw);
+  padding-top: calc(1.9em + 1.6vw);
   font-size: clamp(1em, 4vw, 1.7em);
   text-align: center;
   line-height: 1.2;

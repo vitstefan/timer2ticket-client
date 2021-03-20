@@ -4,6 +4,10 @@
       {{ isScheduled ? 'Sync is on' : 'Sync is off' }}
     </h1>
 
+    <mat-icon id="sync-icon" fontSet="material-icons-outlined">
+      {{ errorCommunicatingWithCore ? 'sync_problem' : (isScheduled ? 'sync' : 'sync_disabled') }}
+    </mat-icon>
+
     <button type="button" (click)="changeSync()">
       {{ isScheduled ? 'Turn off sync' : 'Turn on sync' }}
     </button>
@@ -13,25 +17,25 @@
         <span>Last successful config sync job</span>
         <!-- Little bit more user-friendly text (Today or Yesterday or date) -->
         <span *ngIf="!isLastSuccessfullyDoneConfigToday && !isLastSuccessfullyDoneConfigYesterday">
-          {{ lastSuccessfullyDoneConfig | date : 'MM/dd/YY hh:mm' }}
+          {{ lastSuccessfullyDoneConfig | date : 'MM/dd/YY HH:mm' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneConfigToday">
-          Today {{ lastSuccessfullyDoneConfig | date : 'hh:mm' }}
+          Today {{ lastSuccessfullyDoneConfig | date : 'HH:mm' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneConfigYesterday">
-          Yesterday {{ lastSuccessfullyDoneConfig | date : 'hh:mm' }}
+          Yesterday {{ lastSuccessfullyDoneConfig | date : 'HH:mm' }}
         </span>
       </ng-container>
       <ng-container *ngIf="lastSuccessfullyDoneTimeEntries">
         <span>Last successful time entries sync job</span>
         <span *ngIf="!isLastSuccessfullyDoneTimeEntriesToday && !isLastSuccessfullyDoneTimeEntriesYesterday">
-          {{ lastSuccessfullyDoneTimeEntries | date : 'MM/dd/YY hh:mm' }}
+          {{ lastSuccessfullyDoneTimeEntries | date : 'MM/dd/YY HH:mm' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneTimeEntriesToday">
-          Today {{ lastSuccessfullyDoneTimeEntries | date : 'hh:mm' }}
+          Today {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneTimeEntriesYesterday">
-          Yesterday {{ lastSuccessfullyDoneTimeEntries | date : 'hh:mm' }}
+          Yesterday {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' }}
         </span>
       </ng-container>
       <span *ngIf="showDatesCanBeOutdated" class="outdated-notice">

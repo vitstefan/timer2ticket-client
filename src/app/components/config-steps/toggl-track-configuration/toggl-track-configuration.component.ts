@@ -77,9 +77,10 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
         this.workspaces = data;
         if (this.serviceDefinition.config.workspaceId) {
           this.chosenWorkspace = this.workspaces.find(workspace => workspace.id === this.serviceDefinition.config.workspaceId) ?? null;
-        } else if (this.workspaces.length > 0) {
-          this.chosenWorkspace = this.workspaces[0];
-        }
+        } 
+        // else if (this.workspaces.length > 0) {
+        //   this.chosenWorkspace = this.workspaces[0];
+        // }
 
         this.showWorkspaceField = true;
         this.app.hideLoading();

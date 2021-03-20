@@ -75,9 +75,10 @@ export class RedmineConfigurationComponent implements OnInit, OnDestroy {
         this.timeEntryActivities = data.time_entry_activities;
         if (this.serviceDefinition.config.defaultTimeEntryActivityId) {
           this.defaultTimeEntryActivity = this.timeEntryActivities.find(tea => tea.id === this.serviceDefinition.config.defaultTimeEntryActivityId) ?? null;
-        } else if (this.timeEntryActivities.length > 0) {
-          this.defaultTimeEntryActivity = this.timeEntryActivities[0];
-        }
+        } 
+        // else if (this.timeEntryActivities.length > 0) {
+        //   this.defaultTimeEntryActivity = this.timeEntryActivities[0];
+        // }
 
         // this correction is also made on API's side
         // add last / if not provided by user
