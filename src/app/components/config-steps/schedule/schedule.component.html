@@ -115,7 +115,7 @@
           [routerLink]='["/config-steps/confirmation"]' (click)="nextStep()">
           Jump to confirmation
         </a>
-        <a *ngIf="steps && steps.nextRoute && showNextStep()" [routerLink]='["/" + steps.nextRoute]'
+        <a *ngIf="steps && steps.nextRoute && showNextStep() && user.status === 'registrated'" [routerLink]='["/" + steps.nextRoute]'
           (click)="nextStep()">
           Next step
         </a>

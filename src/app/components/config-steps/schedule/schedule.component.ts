@@ -251,7 +251,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       days += this.confChosenSunday ? 'sun,' : '';
       // remove last ','
       days = days.substr(0, days.length - 1);
-      confSchedule = `${minutes} ${hour} * * ${days}`;
+      confSchedule = `${minutes} ${Number(hour) - 1} * * ${days}`;
     }
     this.user.configSyncJobDefinition = new JobDefinition(confSchedule);
 
@@ -273,7 +273,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       days += this.timeEntriesChosenSunday ? 'sun,' : '';
       // remove last ','
       days = days.substr(0, days.length - 1);
-      timeEntriesSchedule = `${minutes} ${hour} * * ${days}`;
+      timeEntriesSchedule = `${minutes} ${Number(hour) - 1} * * ${days}`;
     }
     this.user.timeEntrySyncJobDefinition = new JobDefinition(timeEntriesSchedule);
   }
@@ -313,7 +313,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
       this.confEvery = this.everySchedules[0];
       this.showConfEveryDetail = false;
-      this.confAt = `${hour}:${minutes}`;
+      this.confAt = `${Number(hour) + 1}:${minutes}`;
       this.showConfAt = true;
     }
   }
@@ -353,7 +353,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
       this.timeEntriesEvery = this.everySchedules[0];
       this.showTimeEntriesEveryDetail = false;
-      this.timeEntriesAt = `${hour}:${minutes}`;
+      this.timeEntriesAt = `${Number(hour) + 1}:${minutes}`;
       this.showTimeEntriesAt = true;
     }
   }

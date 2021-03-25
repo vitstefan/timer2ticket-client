@@ -13,6 +13,9 @@
 
 .notifs-close-button {
     font-size: xxx-large;
+}
+
+.cursor-pointer {
     cursor: pointer;
 }
 
@@ -91,7 +94,7 @@
     padding: unset;
     font-size: var(--notifs-content-size);
     color: var(--notifs-content-color);
-    font-family: Montserrat, Arial, Sans Serif;
+    font-family: Montserrat, Arial, Sans serif;
 }
 
 .notifs-content-type-1 {

@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   public buildNotification(content: String) {
-    new buildNotification(content, 0, 0, 2, 0, 4);
+    new buildNotification(content, 0, 0, 2, 0, 9);
   }
 
   public hideLoading(): void {

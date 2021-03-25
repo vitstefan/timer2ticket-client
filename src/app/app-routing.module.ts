@@ -23,7 +23,7 @@ const routes = [
   { path: 'config-steps/confirmation', component: ConfirmationComponent, canActivate: [AuthGuard] },
   { path: 'overview', component: OverviewComponent, canActivate: [AuthGuard, OverviewGuard] },
 
-  //{ path: '**', component: PageNotFoundComponent }
+  { path: '**', component: LoginComponent }
 ];
 
 @NgModule({

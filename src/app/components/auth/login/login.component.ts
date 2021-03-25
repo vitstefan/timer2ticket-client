@@ -29,6 +29,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    // check if user is already logged in
+    if (this._appData.userValue) {
+      // redirect to overview
+      this._router.navigate(['overview'], { replaceUrl: true });
+    }
+
     this.rememberCredentials = localStorage?.rememberCredentials === 'true' ?? true;
 
     if (this.rememberCredentials) {

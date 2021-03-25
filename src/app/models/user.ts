@@ -1,5 +1,4 @@
 import { JobDefinition } from "./job_definition";
-import { Mapping } from "./mapping/mapping";
 import { ServiceDefinition } from "./service_definition/service_definition";
 
 export class User {
@@ -10,7 +9,6 @@ export class User {
   configSyncJobDefinition!: JobDefinition | null;
   timeEntrySyncJobDefinition!: JobDefinition | null;
   serviceDefinitions!: ServiceDefinition[];
-  mappings!: Mapping[];
 
   token: string;
 }
