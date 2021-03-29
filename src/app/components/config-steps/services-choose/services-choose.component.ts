@@ -23,7 +23,7 @@ export class ServicesChooseComponent implements OnInit, OnDestroy {
 
   private _route = 'config-steps/services-choose';
 
-  private $_userSubscription: Subscription;
+  private $_userToEditSubscription: Subscription;
   private $_stepsCountSubscription: Subscription;
 
   public user: User;
@@ -38,7 +38,7 @@ export class ServicesChooseComponent implements OnInit, OnDestroy {
   public steps;
 
   ngOnInit() {
-    this.$_userSubscription = this._appData.user.subscribe(user => this.user = user);
+    this.$_userToEditSubscription = this._appData.userToEdit.subscribe(user => this.user = user);
     this.$_stepsCountSubscription = this._appData.stepsCount.subscribe(stepsCount => this.stepsCount = stepsCount);
 
     this._servicesToChooseMap = this._appData.populateServicesMap();
@@ -54,7 +54,7 @@ export class ServicesChooseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.$_userSubscription?.unsubscribe();
+    this.$_userToEditSubscription?.unsubscribe();
     this.$_stepsCountSubscription?.unsubscribe();
   }
 
@@ -82,7 +82,6 @@ export class ServicesChooseComponent implements OnInit, OnDestroy {
           this.user.serviceDefinitions.push(new ServiceDefinition(serviceToChoose.key, serviceToChoose.name === 'Redmine'));
         }
       });
-      this._appData.setUser(this.user);
     } else {
       let allServicesRemain = true;
       this.user.serviceDefinitions.forEach(serviceDefinition => {
@@ -102,20 +101,20 @@ export class ServicesChooseComponent implements OnInit, OnDestroy {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-          if (result === true) {
-            this.servicesToChooseList.forEach(serviceToChoose => {
-              const indexOfServiceDefinition = this.user.serviceDefinitions.findIndex(serviceDefinition => serviceDefinition.name === serviceToChoose.key);
-              if (serviceToChoose.isChosen && indexOfServiceDefinition === -1) {
-                this.user.serviceDefinitions.push(new ServiceDefinition(serviceToChoose.key, serviceToChoose.name === 'Redmine'));
-              } else if (!serviceToChoose.isChosen && indexOfServiceDefinition >= 0) {
-                this.user.serviceDefinitions.splice(indexOfServiceDefinition, 1);
-              }
-            });
-            this._appData.setUser(this.user);
-          } else {
+          if (!result) {
             // go back to this route without changes (route changed due to clicking next step)
             this._router.navigate([this._route], { replaceUrl: true });
+            return;
           }
+
+          this.servicesToChooseList.forEach(serviceToChoose => {
+            const indexOfServiceDefinition = this.user.serviceDefinitions.findIndex(serviceDefinition => serviceDefinition.name === serviceToChoose.key);
+            if (serviceToChoose.isChosen && indexOfServiceDefinition === -1) {
+              this.user.serviceDefinitions.push(new ServiceDefinition(serviceToChoose.key, serviceToChoose.name === 'Redmine'));
+            } else if (!serviceToChoose.isChosen && indexOfServiceDefinition >= 0) {
+              this.user.serviceDefinitions.splice(indexOfServiceDefinition, 1);
+            }
+          });
         });
       }
     }

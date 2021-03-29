@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ServiceToChoose } from '../models/service_to_choose';
 import { User } from '../models/user';
+import { Utilities } from '../utilities/utilities';
 
 /**
  * Class representing app data, should be treated as singleton
@@ -13,7 +14,18 @@ import { User } from '../models/user';
 })
 export class AppData {
   private _userSource = new BehaviorSubject<User>(null);
+  /**
+   * Real user object used when registrating and overviewing, populated from the server
+   */
   public user: Observable<User> = this._userSource.asObservable();
+
+  private _userToEditSource = new BehaviorSubject<User>(null);
+  /**
+   * Copy of the real user used only when editing and revisiting config steps.
+   * Allows to discard the changes, real user object above is used when cancelled.
+   * If changes accepted and confirmed, real user object is populated by this copy.
+   */
+  public userToEdit: Observable<User> = this._userToEditSource.asObservable();
 
   private _stepsCountSource = new BehaviorSubject<number>(5);
   public stepsCount: Observable<number> = this._stepsCountSource.asObservable();
@@ -52,6 +64,17 @@ export class AppData {
 
   public setUser(user: User): void {
     this._userSource.next(user);
+    this.setUserToEdit(user);
+    this.setStepsCount(user?.serviceDefinitions?.length ?? 0);
+  }
+
+  public get userToEditValue(): User {
+    return this._userToEditSource.value;
+  }
+
+  public setUserToEdit(user: User): void {
+    const userCopy = Utilities.copy(user);
+    this._userToEditSource.next(userCopy);
     this.setStepsCount(user?.serviceDefinitions?.length ?? 0);
   }
 
@@ -75,14 +98,21 @@ export class AppData {
           stepsRoutes.push(service.route);
         }
       });
-    } else if (this.userValue.serviceDefinitions) {
+    } else if (this.userValue.status !== 'registrated' && this.userValue.serviceDefinitions) {
       // if not, try to ask for real serviceDefinitions
       this._possibleServicesAndRoutes.forEach(service => {
         if (this.userValue.serviceDefinitions.findIndex(serviceDefinition => serviceDefinition.name === service.key) !== -1) {
           stepsRoutes.push(service.route);
         }
       });
-    }
+    } else if (this.userToEditValue.status === 'registrated' && this.userToEditValue.serviceDefinitions) {
+      // if not, try to ask for real serviceDefinitions
+      this._possibleServicesAndRoutes.forEach(service => {
+        if (this.userToEditValue.serviceDefinitions.findIndex(serviceDefinition => serviceDefinition.name === service.key) !== -1) {
+          stepsRoutes.push(service.route);
+        }
+      });
+    } 
     stepsRoutes.push('config-steps/schedule');
     stepsRoutes.push('config-steps/confirmation');
     this._stepsRoutesSource.next(stepsRoutes);

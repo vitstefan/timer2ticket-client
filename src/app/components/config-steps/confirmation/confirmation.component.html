@@ -19,6 +19,9 @@
         Confirm and start syncing <mat-icon fontSet="material-icons-outlined">done_all</mat-icon></button>
 
       <div class="steps-container">
+        <a *ngIf="user.status !== 'registrated'" [routerLink]='["/overview"]'>
+          Overview (without changes)
+        </a>
         <a *ngIf="steps && steps.prevRoute" [routerLink]='["/" + steps.prevRoute]'>
           Prev step
         </a>

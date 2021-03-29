@@ -6,35 +6,39 @@
       <label for="api-key">API key *</label>
       <div class="element-hint-below">
         <input id="api-key" name="api-key" type="text" [(ngModel)]="serviceDefinition.apiKey" required #apikey="ngModel"
-          [disabled]="showWorkspaceField">
+          [disabled]="inputDataChecked">
         <span>Provide your API key to successfully connect to Redmine service.</span>
       </div>
-      <button *ngIf="!showWorkspaceField" type="submit" (click)="checkIfCorrect()" [disabled]="!apikey.valid">
+      <button *ngIf="!inputDataChecked" type="submit" (click)="checkIfCorrect()" [disabled]="!apikey.valid">
         Check if correct<mat-icon fontSet="material-icons-outlined">done_all</mat-icon></button>
-      <label *ngIf="showWorkspaceField" for="chosen-workspace">Workspace *</label>
-      <div *ngIf="showWorkspaceField" class="element-hint-below">
+      <label *ngIf="chosenWorkspace" for="chosen-workspace">Workspace *</label>
+      <div *ngIf="chosenWorkspace || inputDataChecked" class="element-hint-below">
         <select id="chosen-workspace" name="chosen-workspace" [(ngModel)]="chosenWorkspace"
           (ngModelChange)="changeWorkspace()" [disabled]="!isWorkspaceChangeEnabled">
           <option *ngFor="let workspace of workspaces" [ngValue]="workspace">{{ workspace.name }}</option>
         </select>
         <span>
           Time entries will be synced from/to this workspace.
-          {{ !isWorkspaceChangeEnabled ? ' (cannot be changed)' : '' }}
+          {{ !isWorkspaceChangeEnabled ? ' (cannot be changed now)' : '' }}
         </span>
       </div>
-      <div *ngIf="showWorkspaceField" class="element-hint-below">
+      <div *ngIf="inputDataChecked" class="element-hint-below">
         <mat-checkbox id="is-primary" name="is-primary" type="checkbox" color="primary"
           [(ngModel)]="serviceDefinition.isPrimary" disabled>Primary service?
         </mat-checkbox>
-        <span>Projects etc. will be synced from this service to the others. (Toggl Track cannot be primary, for
-          now)</span>
+        <span>
+          Projects etc. will be synced from this service to the others. (Toggl Track cannot be primary, for now)
+        </span>
       </div>
       <div class="steps-container">
-        <a *ngIf="steps && steps.nextRoute && showWorkspaceField && chosenWorkspace && user.status !== 'registrated'"
+        <a *ngIf="steps && steps.nextRoute && inputDataChecked && chosenWorkspace && user.status !== 'registrated'"
           [routerLink]='["/config-steps/confirmation"]' (click)="nextStep()">
           Jump to confirmation
         </a>
-        <a *ngIf="steps && steps.nextRoute && showWorkspaceField && chosenWorkspace"
+        <a *ngIf="user.status !== 'registrated'" [routerLink]='["/overview"]'>
+          Overview (without changes)
+        </a>
+        <a *ngIf="steps && steps.nextRoute && inputDataChecked && chosenWorkspace"
           [routerLink]='["/" + steps.nextRoute]' (click)="nextStep()">
           Next step
         </a>

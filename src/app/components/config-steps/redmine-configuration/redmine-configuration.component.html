@@ -6,38 +6,47 @@
       <label for="api-key">API key *</label>
       <div class="element-hint-below">
         <input id="api-key" name="api-key" type="text" [(ngModel)]="serviceDefinition.apiKey" required #apikey="ngModel"
-          [disabled]="showTimeEntryActivities">
+          [disabled]="inputDataChecked">
         <span>Provide your API key to successfully connect to Redmine service.</span>
       </div>
       <label for="api-point">API point *</label>
       <div class="element-hint-below">
         <input id="api-point" name="api-point" type="text" [(ngModel)]="serviceDefinition.config.apiPoint" required
-          #apipoint="ngModel" [disabled]="showTimeEntryActivities">
+          #apipoint="ngModel" [disabled]="inputDataChecked">
         <span>Provide your Redmine API point (should be url) to successfully connect to Redmine service.</span>
       </div>
-      <button *ngIf="!showTimeEntryActivities" type="submit" (click)="checkIfCorrect()"
+      <button *ngIf="!inputDataChecked" type="submit" (click)="checkIfCorrect()"
         [disabled]="!apikey.valid || !apipoint.valid">
         Check if correct<mat-icon fontSet="material-icons-outlined">done_all</mat-icon></button>
-      <label *ngIf="showTimeEntryActivities" for="default-time-entry-activity">Default time entry activity *</label>
-      <div *ngIf="showTimeEntryActivities" class="element-hint-below">
+      <label *ngIf="defaultTimeEntryActivity" for="default-time-entry-activity">Default time entry activity *</label>
+      <div *ngIf="defaultTimeEntryActivity || inputDataChecked" class="element-hint-below">
         <select id="default-time-entry-activity" name="default-time-entry-activity"
-          [(ngModel)]="defaultTimeEntryActivity" (ngModelChange)="changeDefaultTimeEntryActivity()">
+          [(ngModel)]="defaultTimeEntryActivity" (ngModelChange)="changeDefaultTimeEntryActivity()"
+          [disabled]="!inputDataChecked">
           <option *ngFor="let activity of timeEntryActivities" [ngValue]="activity">{{ activity.name }}</option>
         </select>
-        <span>If activity will not be chosen in the time entry (in other service), this one will be filled.</span>
+        <span *ngIf="inputDataChecked">
+          If activity will not be chosen in the time entry (in other service), this one will be filled.
+        </span>
+        <span *ngIf="defaultTimeEntryActivity && !inputDataChecked">
+          Please click the button to check the input data first to change your default time entry activity.
+        </span>
       </div>
-      <div *ngIf="showTimeEntryActivities" class="element-hint-below">
+      <div *ngIf="inputDataChecked" class="element-hint-below">
         <mat-checkbox id="is-primary" name="is-primary" type="checkbox" color="primary"
           [(ngModel)]="serviceDefinition.isPrimary" disabled>Primary service?
         </mat-checkbox>
         <span>Projects etc. will be synced from this service to the others. (Redmine has to be primary, for now)</span>
       </div>
       <div class="steps-container">
-        <a *ngIf="steps && steps.nextRoute && showTimeEntryActivities && defaultTimeEntryActivity && user.status !== 'registrated'"
+        <a *ngIf="steps && steps.nextRoute && inputDataChecked && defaultTimeEntryActivity && user.status !== 'registrated'"
           [routerLink]='["/config-steps/confirmation"]' (click)="nextStep()">
           Jump to confirmation
         </a>
-        <a *ngIf="steps && steps.nextRoute && showTimeEntryActivities && defaultTimeEntryActivity"
+        <a *ngIf="user.status !== 'registrated'" [routerLink]='["/overview"]'>
+          Overview (without changes)
+        </a>
+        <a *ngIf="steps && steps.nextRoute && inputDataChecked && defaultTimeEntryActivity"
           [routerLink]='["/" + steps.nextRoute]' (click)="nextStep()">
           Next step
         </a>

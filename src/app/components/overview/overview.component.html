@@ -1,15 +1,19 @@
 <div class="content-container">
   <div class="content-centered">
     <h1 class="custom-h1">
-      {{ isScheduled ? 'Sync is on' : 'Sync is off' }}
+      {{ errorCommunicatingWithCore ? 'Status unknown' : (isScheduled ? 'Sync is on' : 'Sync is off') }}
     </h1>
 
     <mat-icon id="sync-icon" fontSet="material-icons-outlined">
       {{ errorCommunicatingWithCore ? 'sync_problem' : (isScheduled ? 'sync' : 'sync_disabled') }}
     </mat-icon>
 
-    <button type="button" (click)="changeSync()">
-      {{ isScheduled ? 'Turn off sync' : 'Turn on sync' }}
+    <button type="button" (click)="configSyncNow()">
+      Sync config objects now (projects, issues, ...)
+    </button>
+
+    <button type="button" (click)="timeEntrySyncNow()">
+      Sync time entries now
     </button>
 
     <section *ngIf="lastSuccessfullyDoneConfig || lastSuccessfullyDoneTimeEntries" class="date-section">
@@ -17,29 +21,29 @@
         <span>Last successful config sync job</span>
         <!-- Little bit more user-friendly text (Today or Yesterday or date) -->
         <span *ngIf="!isLastSuccessfullyDoneConfigToday && !isLastSuccessfullyDoneConfigYesterday">
-          {{ lastSuccessfullyDoneConfig | date : 'MM/dd/YY HH:mm' }}
+          {{ lastSuccessfullyDoneConfig | date : 'MM/dd/YY HH:mm' : 'UTC+2' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneConfigToday">
-          Today {{ lastSuccessfullyDoneConfig | date : 'HH:mm' }}
+          Today {{ lastSuccessfullyDoneConfig | date : 'HH:mm' : 'UTC+2' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneConfigYesterday">
-          Yesterday {{ lastSuccessfullyDoneConfig | date : 'HH:mm' }}
+          Yesterday {{ lastSuccessfullyDoneConfig | date : 'HH:mm' : 'UTC+2' }}
         </span>
       </ng-container>
       <ng-container *ngIf="lastSuccessfullyDoneTimeEntries">
         <span>Last successful time entries sync job</span>
         <span *ngIf="!isLastSuccessfullyDoneTimeEntriesToday && !isLastSuccessfullyDoneTimeEntriesYesterday">
-          {{ lastSuccessfullyDoneTimeEntries | date : 'MM/dd/YY HH:mm' }}
+          {{ lastSuccessfullyDoneTimeEntries | date : 'MM/dd/YY HH:mm' : 'UTC+2' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneTimeEntriesToday">
-          Today {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' }}
+          Today {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' : 'UTC+2' }}
         </span>
         <span *ngIf="isLastSuccessfullyDoneTimeEntriesYesterday">
-          Yesterday {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' }}
+          Yesterday {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' : 'UTC+2' }}
         </span>
       </ng-container>
       <span *ngIf="showDatesCanBeOutdated" class="outdated-notice">
-        (Data can be outdated. Please relogin to see current timestamps.)
+        (Data can be outdated. Please relogin to see exact current timestamps.)
       </span>
     </section>
 
@@ -50,6 +54,10 @@
         <div [innerHtml]="service.timeEntriesSyncHint"></div>
       </ng-container>
     </section>
+    
+    <button id="change-sync-btn" type="button" (click)="changeSync()">
+      {{ isScheduled ? 'Turn off sync' : 'Turn on sync' }}
+    </button>
 
     <h2 class="custom-h2">Revisit configuration step</h2>
     <div class="steps-container">

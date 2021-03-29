@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
+import { Workspace as UserWorkspace } from 'src/app/models/service_definition/config/config';
 import { ServiceDefinition } from 'src/app/models/service_definition/service_definition';
-import { ServiceObject } from 'src/app/models/service_object';
 import { User } from 'src/app/models/user';
 import { SyncedServicesConfigService } from 'src/app/services/synced-services-config.service';
 import { AppData } from 'src/app/singletons/app-data';
@@ -22,7 +22,7 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
 
   private _route = 'config-steps/toggl-track-configuration';
 
-  private $_userSubscription: Subscription;
+  private $_userToEditSubscription: Subscription;
   private $_stepsCountSubscription: Subscription;
 
   public user: User;
@@ -30,27 +30,39 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
 
   public steps;
 
-  public chosenWorkspace: ServiceObject;
+  public chosenWorkspace: Workspace;
 
-  public showWorkspaceField: boolean;
+  public inputDataChecked: boolean;
 
-  public workspaces: ServiceObject[];
+  public workspaces: Workspace[];
 
   public serviceDefinition: ServiceDefinition;
 
   public isWorkspaceChangeEnabled: boolean;
 
   ngOnInit(): void {
-    this.$_userSubscription = this._appData.user.subscribe(user => {
+    this.$_userToEditSubscription = this._appData.userToEdit.subscribe(user => {
       this.user = user;
 
       const togglTrackServiceDefinition = this.user.serviceDefinitions.find(sd => sd.name === 'TogglTrack');
       if (togglTrackServiceDefinition) {
         this.serviceDefinition = togglTrackServiceDefinition;
+        this.chosenWorkspace = togglTrackServiceDefinition.config.workspace
+          ? new Workspace(
+            togglTrackServiceDefinition.config.workspace.id,
+            togglTrackServiceDefinition.config.workspace.name
+          )
+          : null;
+        if (this.chosenWorkspace) {
+          this.workspaces = [
+            this.chosenWorkspace
+          ];
+        }
       } else {
         this.serviceDefinition = new ServiceDefinition('TogglTrack');
+        this.workspaces = [];
+        this.chosenWorkspace = null;
       }
-      this.chosenWorkspace = null;
 
       // do not allow workspace change when already chosen before
       this.isWorkspaceChangeEnabled = this.user.status === 'registrated';
@@ -59,13 +71,11 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
 
     this.steps = this._appData.getStepsForCurrentRoute(this._route);
 
-    this.workspaces = [];
-
-    this.showWorkspaceField = false;
+    this.inputDataChecked = false;
   }
 
   ngOnDestroy(): void {
-    this.$_userSubscription?.unsubscribe();
+    this.$_userToEditSubscription?.unsubscribe();
     this.$_stepsCountSubscription?.unsubscribe();
   }
 
@@ -75,14 +85,11 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
       .togglTrackWorkspaces(this.serviceDefinition.apiKey)
       .subscribe(data => {
         this.workspaces = data;
-        if (this.serviceDefinition.config.workspaceId) {
-          this.chosenWorkspace = this.workspaces.find(workspace => workspace.id === this.serviceDefinition.config.workspaceId) ?? null;
-        } 
-        // else if (this.workspaces.length > 0) {
-        //   this.chosenWorkspace = this.workspaces[0];
-        // }
+        if (this.serviceDefinition.config.workspace) {
+          this.chosenWorkspace = this.workspaces.find(workspace => workspace.id === this.serviceDefinition.config.workspace.id) ?? null;
+        }
 
-        this.showWorkspaceField = true;
+        this.inputDataChecked = true;
         this.app.hideLoading();
         this.app.buildNotification('It seems OK! Choose your workspace and continue with next step.');
       }, (error) => {
@@ -92,11 +99,14 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
   }
 
   public changeWorkspace(): void {
-    this.serviceDefinition.config.workspaceId = Number(this.chosenWorkspace.id);
+    this.serviceDefinition.config.workspace = new UserWorkspace(
+      Number(this.chosenWorkspace.id),
+      this.chosenWorkspace.name,
+    );
   }
 
   public nextStep(): void {
-    this.serviceDefinition.config.workspaceId = Number(this.chosenWorkspace.id);
+    this.changeWorkspace();
     const index = this.user.serviceDefinitions.findIndex(serviceDefinition => serviceDefinition.name === 'TogglTrack');
     if (index !== -1) {
       this.user.serviceDefinitions.splice(index, 1);
@@ -104,4 +114,18 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
     this.user.serviceDefinitions.push(this.serviceDefinition);
   }
 
+}
+
+/**
+ * Not exported class only used here to display workspaces
+ * (same as Workspace in config or ServiceObject, but logically makes sense to create utility class)
+ */
+class Workspace {
+  id: number | string;
+  name: string;
+
+  constructor(id: number | string, name: string) {
+    this.id = id;
+    this.name = name;
+  }
 }

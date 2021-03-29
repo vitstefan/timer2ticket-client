@@ -46,3 +46,7 @@ section.date-section>* {
 h1 {
   padding-bottom: clamp(0.2em, 5vw, 1.2em);
 }
+
+#change-sync-btn {
+  margin-top: 2em;
+}

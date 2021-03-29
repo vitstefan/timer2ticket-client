@@ -17,9 +17,9 @@
       <mat-checkbox id="remember-credentials" name="remember-credentials" type="checkbox" color="primary"
         [(ngModel)]="rememberCredentials" (ngModelChange)="changeRememberCredentials()">Remember credentials?
       </mat-checkbox>
-      <button type="submit" (click)="authenticate()" [disabled]="!email.valid || !password.valid">
+      <button type="submit" (click)="authenticate()">
         Log in <mat-icon fontSet="material-icons-outlined">login</mat-icon></button>
-      <a [routerLink]='["/registration"]'>New user? Registrate <mat-icon fontSet="material-icons-outlined">how_to_reg
+      <a [routerLink]='["/registration"]'>New user? Register <mat-icon fontSet="material-icons-outlined">how_to_reg
         </mat-icon></a>
     </form>
   </div>

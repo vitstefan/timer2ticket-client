@@ -29,7 +29,7 @@ export class RegistrationComponent implements OnDestroy {
     this.$_isRegistrationOkSubscription?.unsubscribe();
   }
 
-  registrate(): void {
+  register(): void {
     if (this.preRegistratedUser.password !== this.preRegistratedUser.passwordAgain) {
       this.app.buildNotification('Passwords are not same.');
     } else {

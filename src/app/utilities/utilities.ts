@@ -28,4 +28,8 @@ export class Utilities {
         ? month1 - month2
         : (day1 - day2));
   }
+
+  static copy<T>(objectToCopy: T): T {
+    return JSON.parse(JSON.stringify(objectToCopy));
+  }
 }

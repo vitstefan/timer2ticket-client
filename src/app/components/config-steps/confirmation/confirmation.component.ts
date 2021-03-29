@@ -24,7 +24,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
 
   private _route = 'config-steps/confirmation';
 
-  private $_userSubscription: Subscription;
+  private $_userToEditSubscription: Subscription;
   private $_stepsCountSubscription: Subscription;
 
   public user: User;
@@ -37,8 +37,8 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
   public otherServices: string[];
 
   ngOnInit(): void {
-    this.$_userSubscription = this._appData.user.subscribe(user => {
-      this.user = user;
+    this.$_userToEditSubscription = this._appData.userToEdit.subscribe(userToEdit => {
+      this.user = userToEdit;
 
       this.allServices = [];
       this.otherServices = [];
@@ -59,7 +59,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.$_userSubscription?.unsubscribe();
+    this.$_userToEditSubscription?.unsubscribe();
     this.$_stepsCountSubscription?.unsubscribe();
   }
 
@@ -80,9 +80,11 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
         } else {
           this.app.buildNotification('Your configuration was successfully saved. However something went wrong with syncing. Try to sync manually.');
         }
+        // set the user (not userToEdit)
         this._appData.setUser(this.user);
       }, (error) => {
         this._router.navigate(['overview']);
+        // set the user (not userToEdit)
         this._appData.setUser(this.user);
         this.app.hideLoading();
         this.app.buildNotification('Your configuration was successfully saved. However something went wrong with syncing. Try to sync manually.');

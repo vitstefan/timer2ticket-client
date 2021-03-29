@@ -14,6 +14,34 @@ export class JobService {
     private _http: HttpClient,
   ) { }
 
+  scheduleConfigJob(userId: string): Observable<{ scheduled: boolean }> {
+    console.log("***** JOBS ***** schedule config job");
+
+    // empty body
+    return this._http.post<{ scheduled: boolean }>(`${this._jobsApiUrl}/schedule_config_job/${userId}`, {})
+      .pipe(
+        catchError((error) => {
+          console.error(error);
+          // rethrow status back to the component
+          return throwError(error);
+        })
+      );
+  }
+
+  scheduleTimeEntriesJob(userId: string): Observable<{ scheduled: boolean }> {
+    console.log("***** JOBS ***** schedule config job");
+
+    // empty body
+    return this._http.post<{ scheduled: boolean }>(`${this._jobsApiUrl}/schedule_time_entries_job/${userId}`, {})
+      .pipe(
+        catchError((error) => {
+          console.error(error);
+          // rethrow status back to the component
+          return throwError(error);
+        })
+      );
+  }
+
   start(userId: string): Observable<{ started: boolean }> {
     console.log("***** JOBS ***** stop");
 

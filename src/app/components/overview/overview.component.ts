@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, SecurityContext } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
@@ -6,6 +7,7 @@ import { User } from 'src/app/models/user';
 import { JobService } from 'src/app/services/job.service';
 import { AppData } from 'src/app/singletons/app-data';
 import { Utilities } from 'src/app/utilities/utilities';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-overview',
@@ -17,6 +19,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(
     private _appData: AppData,
     public app: AppComponent,
+    public dialog: MatDialog,
     private _sanitizer: DomSanitizer,
     private _jobService: JobService,
   ) { }
@@ -109,13 +112,58 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.$_stepsCountSubscription?.unsubscribe();
   }
 
+  public configSyncNow(): void {
+    this._jobService.scheduleConfigJob(this.user._id).subscribe(res => {
+      if (res.scheduled) {
+        this.app.buildNotification('Config job scheduled. It may take a while to complete.');
+        this.errorCommunicatingWithCore = false;
+        this.showDatesCanBeOutdated = true;
+      } else {
+        this.app.buildNotification('Config job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.');
+        this.errorCommunicatingWithCore = true;
+      }
+    }, (error) => {
+      this._jobRequestError();
+    });
+  }
+
+  public timeEntrySyncNow(): void {
+    this._jobService.scheduleTimeEntriesJob(this.user._id).subscribe(res => {
+      if (res.scheduled) {
+        this.app.buildNotification('Time entry job scheduled. It may take a while to complete.');
+        this.errorCommunicatingWithCore = false;
+        this.showDatesCanBeOutdated = true;
+      } else {
+        this.app.buildNotification('Time entry job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.');
+        this.errorCommunicatingWithCore = true;
+      }
+    }, (error) => {
+      this._jobRequestError();
+    });
+  }
+
   public changeSync(): void {
     // locally change user status (on API's side it is changed)
-    if (this.isScheduled) {
-      this._stopSync();
-    } else {
-      this._startSync();
-    }
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '40em',
+      data: {
+        title: this.isScheduled ? 'Really want to stop syncing?' : 'Really want to start syncing?',
+        body: '',
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+
+      if (this.isScheduled) {
+        this._stopSync();
+      } else {
+        this._startSync();
+      }
+    });
   }
 
   private _startSync(): void {
@@ -155,9 +203,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   private _jobRequestError() {
-    this.isScheduled = false;
     this.errorCommunicatingWithCore = true;
-    this.user.status = 'inactive';
     this._appData.setUser(this.user);
     this.app.buildNotification('Some error occured when communicating with the sync server. Please try again after a while.');
   }

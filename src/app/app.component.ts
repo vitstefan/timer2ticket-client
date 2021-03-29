@@ -20,7 +20,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentInit {
   public loadingHidden: boolean;
 
   constructor(
-    private _router: Router,
+    public router: Router,
     private _appData: AppData,
   ) { }
 
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   private redirectToLogin(): void {
-    this._router.navigate(['login'], { replaceUrl: true });
+    this.router.navigate(['login'], { replaceUrl: true });
   }
 
   public buildNotification(content: String) {

@@ -18,8 +18,8 @@
           required #passwordAgain="ngModel" pattern="(?=.*\d)(?=.*[a-z,A-Z]).{8,}">
         <span>Fill in your password again.</span>
       </div>
-      <button type="submit" (click)="registrate()" [disabled]="!email.valid || !password.valid || !passwordAgain.valid">
-        Registrate <mat-icon fontSet="material-icons-outlined">how_to_reg</mat-icon></button>
+      <button type="submit" (click)="register()" [disabled]="!email.valid || !password.valid || !passwordAgain.valid">
+        Register <mat-icon fontSet="material-icons-outlined">how_to_reg</mat-icon></button>
       <a [routerLink]='["/login"]'>Cancel <mat-icon fontSet="material-icons-outlined">close</mat-icon></a>
     </form>
   </div>

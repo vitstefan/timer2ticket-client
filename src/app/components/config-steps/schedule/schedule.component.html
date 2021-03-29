@@ -113,10 +113,13 @@
       <div class="steps-container">
         <a *ngIf="steps && steps.nextRoute && showNextStep() && user.status !== 'registrated'"
           [routerLink]='["/config-steps/confirmation"]' (click)="nextStep()">
-          Jump to confirmation
+          Next step (confirmation)
         </a>
-        <a *ngIf="steps && steps.nextRoute && showNextStep() && user.status === 'registrated'" [routerLink]='["/" + steps.nextRoute]'
-          (click)="nextStep()">
+        <a *ngIf="user.status !== 'registrated'" [routerLink]='["/overview"]'>
+          Overview (without changes)
+        </a>
+        <a *ngIf="steps && steps.nextRoute && showNextStep() && user.status === 'registrated'"
+          [routerLink]='["/" + steps.nextRoute]' (click)="nextStep()">
           Next step
         </a>
         <a *ngIf="steps && steps.prevRoute" [routerLink]='["/" + steps.prevRoute]'>

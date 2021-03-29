@@ -60,6 +60,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       .authenticate(this.preAuthenticatedUser.username, this.preAuthenticatedUser.password)
       .subscribe((user) => {
         if (user) {
+          // set logged user
+          // if redirecting to config-steps, userToEdit will be needed
+          // if redirecting to overview, user is needed
+          // this appData method sets both user and userToEdit
           this._appData.setUser(user);
           if (this.rememberCredentials) {
             localStorage.username = user.username;

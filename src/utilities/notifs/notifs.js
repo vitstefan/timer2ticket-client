@@ -139,7 +139,7 @@ function buildNotification(text, theme, contentType, position, regime, lifespan)
     else if (lifespan === NLifespan.TillClosedWholeCanvas
         || lifespan === NLifespan.TillClosedWithFiveSecondsTimeoutWholeCanvas
         || lifespan === NLifespan.TillClosedWithEightSecondsTimeoutWholeCanvas) {
-        // addCloseButton();
+        addCloseButton();
         getCanvas().addEventListener('click', hide);
         getCanvas().classList.add('cursor-pointer');
     }

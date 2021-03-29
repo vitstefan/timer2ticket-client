@@ -17,7 +17,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
   private _route = 'config-steps/schedule';
 
-  private $_userSubscription: Subscription;
+  private $_userToEditSubscription: Subscription;
   private $_stepsCountSubscription: Subscription;
 
   public user: User;
@@ -61,13 +61,9 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.everySchedules.push({ label: '12 hours', schedule: '0 */12 * * *' });
     this.everySchedules.push({ label: '6 hours', schedule: '0 */6 * * *' });
     this.everySchedules.push({ label: '3 hours', schedule: '0 */3 * * *' });
-    this.everySchedules.push({ label: '2 hours', schedule: '0 */2 * * *' });
     this.everySchedules.push({ label: '1 hour', schedule: '0 */1 * * *' });
-    this.everySchedules.push({ label: '30 minutes', schedule: '*/30 */1 * * *' });
-    this.everySchedules.push({ label: '15 minutes', schedule: '*/15 */1 * * *' });
-    this.everySchedules.push({ label: '5 minutes', schedule: '*/5 */1 * * *' });
 
-    this.$_userSubscription = this._appData.user.subscribe(user => {
+    this.$_userToEditSubscription = this._appData.userToEdit.subscribe(user => {
       this.user = user;
 
       // conf
@@ -105,7 +101,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
         this.timeEntriesChosenSaturday = true;
         this.timeEntriesChosenSunday = true;
 
-        this.timeEntriesEvery = this.everySchedules[4];
+        this.timeEntriesEvery = this.everySchedules[0];
         this.showTimeEntriesEveryDetail = true;
         this.timeEntriesAt = '18:00';
         this.showTimeEntriesAt = false;
@@ -117,7 +113,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.$_userSubscription?.unsubscribe();
+    this.$_userToEditSubscription?.unsubscribe();
     this.$_stepsCountSubscription?.unsubscribe();
   }
 
@@ -251,7 +247,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       days += this.confChosenSunday ? 'sun,' : '';
       // remove last ','
       days = days.substr(0, days.length - 1);
-      confSchedule = `${minutes} ${Number(hour) - 1} * * ${days}`;
+      confSchedule = `${minutes} ${Number(hour)} * * ${days}`;
     }
     this.user.configSyncJobDefinition = new JobDefinition(confSchedule);
 
@@ -273,7 +269,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
       days += this.timeEntriesChosenSunday ? 'sun,' : '';
       // remove last ','
       days = days.substr(0, days.length - 1);
-      timeEntriesSchedule = `${minutes} ${Number(hour) - 1} * * ${days}`;
+      timeEntriesSchedule = `${minutes} ${Number(hour)} * * ${days}`;
     }
     this.user.timeEntrySyncJobDefinition = new JobDefinition(timeEntriesSchedule);
   }
@@ -313,7 +309,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
       this.confEvery = this.everySchedules[0];
       this.showConfEveryDetail = false;
-      this.confAt = `${Number(hour) + 1}:${minutes}`;
+      this.confAt = `${Number(hour)}:${minutes}`;
       this.showConfAt = true;
     }
   }
@@ -353,7 +349,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
       this.timeEntriesEvery = this.everySchedules[0];
       this.showTimeEntriesEveryDetail = false;
-      this.timeEntriesAt = `${Number(hour) + 1}:${minutes}`;
+      this.timeEntriesAt = `${Number(hour)}:${minutes}`;
       this.showTimeEntriesAt = true;
     }
   }
