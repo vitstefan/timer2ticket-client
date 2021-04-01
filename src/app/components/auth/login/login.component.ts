@@ -72,7 +72,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
         this.app.hideLoading();
       }, (errorStatus) => {
-        console.log(errorStatus);
         if (errorStatus < 500) {
           this.app.buildNotification('Wrong email or password.');
         } else {

@@ -199,19 +199,20 @@ function addNotification(text, contentType) {
     getContent().appendChild(newNotification);
 }
 function addCloseButton() {
-    var closeButton = document.createElement('li');
+    var closeButton = document.createElement('div');
     closeButton.innerHTML = '&times;';
     closeButton.id = 'notifs-close-button';
     closeButton.classList.add('notifs-close-button', 'cursor-pointer');
     closeButton.addEventListener('click', hide);
-    getContent().appendChild(closeButton);
+    getCanvas().appendChild(closeButton);
 }
 function removeCloseButton() {
-    if (getContent().lastChild !== null && (getContent().lastChild.id === 'notifs-close-button')) {
-        getContent().removeChild(getContent().lastChild);
+    if (getCanvas().lastChild !== null && (getCanvas().lastChild.id === 'notifs-close-button')) {
+        getCanvas().removeChild(getCanvas().lastChild);
     }
 }
 function hide() {
+    removeCloseButton();
     getCanvas().classList.remove('notifs-canvas-whole-screen', 'notifs-canvas-right-side', 'notifs-canvas-bottom-side', 'notifs-canvas-bottom-right-corner');
     getCanvas().classList.add('notifs-canvas-hidden');
     getCanvas().removeEventListener('click', hide);

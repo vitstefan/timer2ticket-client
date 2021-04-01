@@ -119,7 +119,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.errorCommunicatingWithCore = false;
         this.showDatesCanBeOutdated = true;
       } else {
-        this.app.buildNotification('Config job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.');
+        this.app.buildNotification('Config job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.', 8);
         this.errorCommunicatingWithCore = true;
       }
     }, (error) => {
@@ -134,17 +134,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.errorCommunicatingWithCore = false;
         this.showDatesCanBeOutdated = true;
       } else {
-        this.app.buildNotification('Time entry job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.');
+        this.app.buildNotification('Time entry job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.', 8);
         this.errorCommunicatingWithCore = true;
       }
-    }, (error) => {
+    }, (errorStatus) => {
+      if (errorStatus === 409) {
+        this.app.buildNotification('Time entry job NOT scheduled. Last config job is not successfully done. Please try it again after a while OR try to schedule config job first.', 8);
+        return;
+      }
       this._jobRequestError();
     });
   }
 
   public changeSync(): void {
-    // locally change user status (on API's side it is changed)
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '40em',
       data: {
@@ -158,6 +160,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
         return;
       }
 
+      // also locally change user status (on API's side it is changed)
       if (this.isScheduled) {
         this._stopSync();
       } else {
@@ -204,8 +207,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   private _jobRequestError() {
     this.errorCommunicatingWithCore = true;
-    this._appData.setUser(this.user);
-    this.app.buildNotification('Some error occured when communicating with the sync server. Please try again after a while.');
+    this.app.buildNotification('Some error occured when communicating with the sync server. Please try again after a while.', 8);
   }
 
 }
