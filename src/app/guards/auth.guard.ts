@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
         private appData: AppData
     ) { }
 
-    //inspiration: http://jasonwatmore.com/post/2018/11/16/angular-7-jwt-authentication-example-tutorial#jwt-interceptor-ts
+    //inspiration: https://jasonwatmore.com/post/2020/07/09/angular-10-jwt-authentication-example-tutorial
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         if (this.appData.userValue) {
             return true; //logged in so return true

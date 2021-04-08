@@ -31,7 +31,7 @@ export class RegistrationComponent implements OnDestroy {
 
   register(): void {
     if (this.preRegistratedUser.password !== this.preRegistratedUser.passwordAgain) {
-      this.app.buildNotification('Passwords are not same.');
+      this.app.buildNotification('Passwords are not the same.');
     } else {
       this.app.showLoading();
       this.$_isRegistrationOkSubscription = this._registrationService.registrate(
@@ -51,7 +51,7 @@ export class RegistrationComponent implements OnDestroy {
         if (errorStatus === 409) {
           this.app.buildNotification('User with this email already exists.');
         } else if (errorStatus === 400) {
-          this.app.buildNotification('Passwords are not same.');
+          this.app.buildNotification('Passwords are not the same.');
         } else {
           this.app.buildNotification('Server did not respond. Try again please.');
         }

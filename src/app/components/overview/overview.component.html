@@ -16,36 +16,45 @@
       Sync time entries now
     </button>
 
-    <section *ngIf="lastSuccessfullyDoneConfig || lastSuccessfullyDoneTimeEntries" class="date-section">
-      <ng-container *ngIf="lastSuccessfullyDoneConfig">
-        <span>Last successful config sync job</span>
-        <!-- Little bit more user-friendly text (Today or Yesterday or date) -->
-        <span *ngIf="!isLastSuccessfullyDoneConfigToday && !isLastSuccessfullyDoneConfigYesterday">
-          {{ lastSuccessfullyDoneConfig | date : 'MM/dd/YY HH:mm' : 'UTC+2' }}
-        </span>
-        <span *ngIf="isLastSuccessfullyDoneConfigToday">
-          Today {{ lastSuccessfullyDoneConfig | date : 'HH:mm' : 'UTC+2' }}
-        </span>
-        <span *ngIf="isLastSuccessfullyDoneConfigYesterday">
-          Yesterday {{ lastSuccessfullyDoneConfig | date : 'HH:mm' : 'UTC+2' }}
-        </span>
-      </ng-container>
-      <ng-container *ngIf="lastSuccessfullyDoneTimeEntries">
-        <span>Last successful time entries sync job</span>
-        <span *ngIf="!isLastSuccessfullyDoneTimeEntriesToday && !isLastSuccessfullyDoneTimeEntriesYesterday">
-          {{ lastSuccessfullyDoneTimeEntries | date : 'MM/dd/YY HH:mm' : 'UTC+2' }}
-        </span>
-        <span *ngIf="isLastSuccessfullyDoneTimeEntriesToday">
-          Today {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' : 'UTC+2' }}
-        </span>
-        <span *ngIf="isLastSuccessfullyDoneTimeEntriesYesterday">
-          Yesterday {{ lastSuccessfullyDoneTimeEntries | date : 'HH:mm' : 'UTC+2' }}
+    <section *ngIf="lastConfigJobLog || lastTimeEntriesJobLog" class="date-section">
+      <ng-container *ngIf="lastConfigJobLog">
+        <span>Last config sync job</span>
+        <span>
+          {{ utilities.dateFormat(lastConfigJobLog.scheduledDate) }}
+          <mat-icon *ngIf="lastConfigJobLog.status === 'scheduled' || lastConfigJobLog.status === 'running'"
+            class="icon-rotate" fontSet="material-icons-outlined" matTooltip="Scheduled or running"
+            #scheduledorrunningtooltip="matTooltip">
+            sync
+          </mat-icon>
+          <mat-icon *ngIf="lastConfigJobLog.status === 'successful'" fontSet="material-icons-outlined"
+            matTooltip="Succesfully completed" #successfultooltip="matTooltip">check</mat-icon>
+          <mat-icon *ngIf="lastConfigJobLog.status === 'unsuccessful'" fontSet="material-icons-outlined"
+            matTooltip="There was some error" #unsuccessfultooltip="matTooltip">error_outline
+          </mat-icon>
         </span>
       </ng-container>
-      <span *ngIf="showDatesCanBeOutdated" class="outdated-notice">
-        (Data can be outdated. Please relogin to see exact current timestamps.)
-      </span>
+      <ng-container *ngIf="lastTimeEntriesJobLog">
+        <span>Last time entries sync job</span>
+        <span>
+          {{ utilities.dateFormat(lastTimeEntriesJobLog.scheduledDate) }}
+          <mat-icon *ngIf="lastTimeEntriesJobLog.status === 'scheduled' || lastTimeEntriesJobLog.status === 'running'"
+            class="icon-rotate" fontSet="material-icons-outlined" matTooltip="Scheduled or running"
+            #scheduledorrunningtooltip="matTooltip">
+            sync
+          </mat-icon>
+          <mat-icon *ngIf="lastTimeEntriesJobLog.status === 'successful'" fontSet="material-icons-outlined"
+            matTooltip="Succesfully completed" #successfultooltip="matTooltip">check
+          </mat-icon>
+          <mat-icon *ngIf="lastTimeEntriesJobLog.status === 'unsuccessful'" fontSet="material-icons-outlined"
+            matTooltip="There was some error" #unsuccessfultooltip="matTooltip">
+            error_outline
+          </mat-icon>
+        </span>
+      </ng-container>
     </section>
+    <a *ngIf="jobLogs?.length > 0" id="more-logs-a" (click)="openJobLogs()">
+      More logs <mat-icon fontSet="material-icons-outlined">chevron_right</mat-icon>
+    </a>
 
     <h2 class="custom-h2">How to correctly sync time entry</h2>
     <section>
@@ -54,7 +63,7 @@
         <div [innerHtml]="service.timeEntriesSyncHint"></div>
       </ng-container>
     </section>
-    
+
     <button id="change-sync-btn" type="button" (click)="changeSync()">
       {{ isScheduled ? 'Turn off sync' : 'Turn on sync' }}
     </button>

@@ -1,0 +1,46 @@
+h3 {
+  padding-top: 1em;
+}
+
+#job-logs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8em;
+}
+
+.job-log-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  column-gap: 1.0em;
+}
+
+@media only screen and (max-width: 880px) {
+  #job-logs-grid {
+    align-items: center;
+  }
+  .job-log-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    width: 60%;
+  }
+  .job-log-container:not(:last-child) {
+    padding-bottom: 1.4em;
+    border-bottom: var(--text-color) 1px solid;
+  }
+}
+
+.job-log-container>div {
+  display: flex;
+  justify-content: center;
+  font-family: Montserrat, Arial, sans-serif;
+}
+
+#showing-only-notice {
+  display: flex;
+  justify-content: center;
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: calc(0.9em + 0.85vw);
+  padding-top: 5em;
+  padding-bottom: 3em;
+}

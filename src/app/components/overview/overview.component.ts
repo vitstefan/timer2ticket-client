@@ -1,13 +1,16 @@
 import { Component, OnDestroy, OnInit, SecurityContext } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
+import { JobLog } from 'src/app/models/jobLog';
 import { User } from 'src/app/models/user';
 import { JobService } from 'src/app/services/job.service';
+import { JobLogsService } from 'src/app/services/jobLogs.service';
 import { AppData } from 'src/app/singletons/app-data';
 import { Utilities } from 'src/app/utilities/utilities';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { JobLogsModalComponent } from './job-logs/job-logs-modal.component';
 
 @Component({
   selector: 'app-overview',
@@ -22,7 +25,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private _sanitizer: DomSanitizer,
     private _jobService: JobService,
+    private _jobLogsService: JobLogsService,
   ) { }
+
+  public utilities = Utilities;
 
   private $_userSubscription: Subscription;
   private $_stepsCountSubscription: Subscription;
@@ -37,16 +43,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public errorCommunicatingWithCore = false;
   private _askedForScheduled: boolean;
 
-  public isLastSuccessfullyDoneConfigToday: boolean;
-  public isLastSuccessfullyDoneConfigYesterday: boolean;
-  public lastSuccessfullyDoneConfig: Date | null;
+  public lastConfigJobLog: JobLog;
+  public lastTimeEntriesJobLog: JobLog;
 
-  public isLastSuccessfullyDoneTimeEntriesToday: boolean;
-  public isLastSuccessfullyDoneTimeEntriesYesterday: boolean;
-  public lastSuccessfullyDoneTimeEntries: Date | null;
-
-  // set to true if user turned on sync manually
-  public showDatesCanBeOutdated: boolean;
+  public jobLogs: JobLog[];
+  private _jobLogsIntervalHandler;
+  private _jobLogsModal: MatDialogRef<JobLogsModalComponent, any>;
 
   ngOnInit(): void {
     this._askedForScheduled = false;
@@ -58,17 +60,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       const today = new Date();
       const yesterday = new Date();
       yesterday.setDate(today.getDate() - 1);
-
-      if (this.user.configSyncJobDefinition?.lastSuccessfullyDone) {
-        this.lastSuccessfullyDoneConfig = new Date(this.user.configSyncJobDefinition.lastSuccessfullyDone);
-        this.isLastSuccessfullyDoneConfigToday = Utilities.compareOnlyDate(today, this.lastSuccessfullyDoneConfig) === 0;
-        this.isLastSuccessfullyDoneConfigYesterday = Utilities.compareOnlyDate(yesterday, this.lastSuccessfullyDoneConfig) === 0;
-      }
-      if (this.user.timeEntrySyncJobDefinition?.lastSuccessfullyDone) {
-        this.lastSuccessfullyDoneTimeEntries = new Date(this.user.timeEntrySyncJobDefinition.lastSuccessfullyDone);
-        this.isLastSuccessfullyDoneTimeEntriesToday = Utilities.compareOnlyDate(today, this.lastSuccessfullyDoneTimeEntries) === 0;
-        this.isLastSuccessfullyDoneTimeEntriesYesterday = Utilities.compareOnlyDate(yesterday, this.lastSuccessfullyDoneTimeEntries) === 0;
-      }
 
       // ask for schedule only once after user's data were subscribed
       // if this check is not here => infinite calling (since there is _appData.setUser)
@@ -89,7 +80,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
           this._jobRequestError();
         });
 
-        this.showDatesCanBeOutdated = false;
+        this._pollJobLogs();
       }
     });
 
@@ -108,6 +99,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    clearInterval(this._jobLogsIntervalHandler);
     this.$_userSubscription?.unsubscribe();
     this.$_stepsCountSubscription?.unsubscribe();
   }
@@ -117,7 +109,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (res.scheduled) {
         this.app.buildNotification('Config job scheduled. It may take a while to complete.');
         this.errorCommunicatingWithCore = false;
-        this.showDatesCanBeOutdated = true;
       } else {
         this.app.buildNotification('Config job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.', 8);
         this.errorCommunicatingWithCore = true;
@@ -132,7 +123,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       if (res.scheduled) {
         this.app.buildNotification('Time entry job scheduled. It may take a while to complete.');
         this.errorCommunicatingWithCore = false;
-        this.showDatesCanBeOutdated = true;
       } else {
         this.app.buildNotification('Time entry job unfortunately NOT scheduled. Some sync server issues occured, please try it again after a while.', 8);
         this.errorCommunicatingWithCore = true;
@@ -175,7 +165,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
       if (this.isScheduled) {
         this.user.status = 'active';
-        this.showDatesCanBeOutdated = true;
         this.app.buildNotification('Jobs correctly started.');
       } else {
         this.user.status = 'inactive';
@@ -210,4 +199,44 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.app.buildNotification('Some error occured when communicating with the sync server. Please try again after a while.', 8);
   }
 
+  public openJobLogs(): void {
+    this._jobLogsModal = this.dialog.open(JobLogsModalComponent, {
+      width: '95%',
+      height: '75%',
+      data: {
+        jobLogs: this.jobLogs,
+      }
+    });
+
+    this._jobLogsModal.afterClosed().subscribe(result => {
+      if (!result) {
+        return;
+      }
+    });
+  }
+
+  private _pollJobLogs() {
+    this.jobLogs = [];
+
+    const intervalFunction = () => {
+      this._jobLogsService.get(this.user._id).subscribe(res => {
+        this.jobLogs = res;
+
+        this.lastConfigJobLog = this.jobLogs.find(jobLog => jobLog.type === 'config');
+        this.lastTimeEntriesJobLog = this.jobLogs.find(jobLog => jobLog.type === 'time-entries');
+
+        // update modal's data
+        if (this._jobLogsModal?.componentInstance) {
+          this._jobLogsModal.componentInstance.data = { jobLogs: this.jobLogs, };
+        }
+      }, (error) => {
+        // TODO provide info about error?
+      });
+    };
+
+    // call now
+    intervalFunction();
+    // and set interval to call again each 3 seconds
+    this._jobLogsIntervalHandler = setInterval(intervalFunction, 3000);
+  }
 }

@@ -10,7 +10,7 @@ export class HttpHeaderInterceptor implements HttpInterceptor {
     private _appData: AppData,
   ) { }
 
-  //inspiration: http://jasonwatmore.com/post/2018/11/16/angular-7-jwt-authentication-example-tutorial#jwt-interceptor-ts
+  //inspiration: https://jasonwatmore.com/post/2020/07/09/angular-10-jwt-authentication-example-tutorial
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     //add contentType header and authorization header with jwt token (if available)
     console.log('http intercept, adding token from user and content to http header');

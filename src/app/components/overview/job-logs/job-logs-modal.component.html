@@ -1,0 +1,51 @@
+<h3>Job Logs</h3>
+
+<section id="job-logs-grid">
+  <div class="job-log-container">
+    <div>
+      <strong>Scheduled</strong>
+    </div>
+    <div>
+      <strong>Type</strong>
+    </div>
+    <div>
+      <strong>Origin</strong>
+    </div>
+    <div>
+      <strong>Completed</strong>
+    </div>
+    <div>
+      <strong>Status</strong>
+    </div>
+  </div>
+  <div *ngFor="let jobLog of data.jobLogs" class="job-log-container">
+    <div>
+      {{ utilities.dateFormat(jobLog.scheduledDate) }}
+    </div>
+    <div>
+      {{ jobLog.type }}
+    </div>
+    <div>
+      {{ jobLog.origin }}
+    </div>
+    <div *ngIf="!jobLog.completed">
+      -
+    </div>
+    <div *ngIf="jobLog.completed">
+      {{ utilities.dateFormat(jobLog.completed) }}
+    </div>
+    <div>
+      <mat-icon *ngIf="jobLog.status === 'scheduled' || jobLog.status === 'running'" class="icon-rotate"
+        fontSet="material-icons-outlined" matTooltip="Scheduled or running" #scheduledorrunningtooltip="matTooltip">
+        sync
+      </mat-icon>
+      <mat-icon *ngIf="jobLog.status === 'successful'" fontSet="material-icons-outlined"
+        matTooltip="Succesfully completed" #successfultooltip="matTooltip">check</mat-icon>
+      <mat-icon *ngIf="jobLog.status === 'unsuccessful'" fontSet="material-icons-outlined"
+        matTooltip="There was some error" #unsuccessfultooltip="matTooltip">error_outline</mat-icon>
+    </div>
+  </div>
+</section>
+<div id="showing-only-notice" *ngIf="data.jobLogs.length === 100">
+  ... Showing only last 100 log entries ...
+</div>

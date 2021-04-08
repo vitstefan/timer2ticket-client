@@ -23,12 +23,15 @@ section>* {
   text-align: center;
 }
 
-section.date-section>*.outdated-notice {
-  font-size: clamp(0.6em, 2vw, 0.9em);
+section.date-section * {
+  font-size: clamp(0.8em, 3vw, 1.4em);
+  display: flex;
+  align-items: center;
 }
 
-section.date-section>* {
-  font-size: clamp(0.8em, 3vw, 1.4em);
+section.date-section .mat-icon {
+  justify-content: center;
+  margin-left: 0.4em;
 }
 
 .order-padding {
@@ -49,4 +52,17 @@ h1 {
 
 #change-sync-btn {
   margin-top: 2em;
+}
+
+#more-logs-a {
+  font-size: calc(0.7em + 0.75vw);
+  padding-top: 1.3em;
+  cursor: pointer;
+}
+
+#more-logs-a .mat-icon {
+  font-size: clamp(0.8em, 3vw, 1.4em);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

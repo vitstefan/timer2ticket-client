@@ -12,7 +12,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     private _router: Router,
   ) { }
 
-  //inspiration: http://jasonwatmore.com/post/2018/11/16/angular-7-jwt-authentication-example-tutorial#jwt-interceptor-ts
+  //inspiration: https://jasonwatmore.com/post/2020/07/09/angular-10-jwt-authentication-example-tutorial
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
       if (err.status === 401 && this._appData.userValue !== null) {

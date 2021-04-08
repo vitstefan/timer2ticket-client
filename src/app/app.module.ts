@@ -26,6 +26,7 @@ import { HttpHeaderInterceptor } from './interceptors/http-header.interceptor';
 import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 import { SyncedServicesConfigService } from './services/synced-services-config.service';
 import { JobService } from './services/job.service';
+import { JobLogsModalComponent } from './components/overview/job-logs/job-logs-modal.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { JobService } from './services/job.service';
     TogglTrackConfigurationComponent,
     ScheduleComponent,
     ConfirmationComponent,
+    JobLogsModalComponent,
   ],
   imports: [
     CommonModule,

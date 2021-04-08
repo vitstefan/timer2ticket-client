@@ -39,9 +39,16 @@ export class AppData {
    */
   private _possibleServicesAndRoutes: { key: string, label: string, route: string, timeEntriesSyncHint: string }[] =
     [
-      { key: 'Redmine', label: 'Redmine', route: 'config-steps/redmine-configuration', timeEntriesSyncHint: 'No special action needed.', },
+      { 
+        key: 'Redmine', 
+        label: 'Redmine', 
+        route: 'config-steps/redmine-configuration', 
+        timeEntriesSyncHint: 'No special action needed.', 
+      },
       {
-        key: 'TogglTrack', label: 'Toggl Track', route: 'config-steps/toggl-track-configuration',
+        key: 'TogglTrack', 
+        label: 'Toggl Track', 
+        route: 'config-steps/toggl-track-configuration',
         timeEntriesSyncHint: `Project or issue is required for the time entry to sync.<br />Optionally, choose an issue from the tags (if not chosen, time entry will be added to the project without the issue).<br />Optionally, choose an activity from the tags (if not chosen, default will be set).`,
       },
     ];

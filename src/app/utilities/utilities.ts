@@ -29,6 +29,22 @@ export class Utilities {
         : (day1 - day2));
   }
 
+  static dateFormat(date: Date | number): string {
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    date = new Date(date);
+
+    const dateFormatted = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    if (this.compareOnlyDate(today, date) === 0) {
+      return `Today ${dateFormatted}`;
+    } else if (this.compareOnlyDate(yesterday, date) === 0) {
+      return `Yesterday ${dateFormatted}`;
+    }
+    return `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')} ${dateFormatted}`;
+  }
+
   static copy<T>(objectToCopy: T): T {
     return JSON.parse(JSON.stringify(objectToCopy));
   }
