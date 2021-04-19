@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { config, Subscription } from 'rxjs';
 import { JobDefinition } from 'src/app/models/job_definition';
 import { User } from 'src/app/models/user';
 import { AppData } from 'src/app/singletons/app-data';
@@ -274,7 +274,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.user.timeEntrySyncJobDefinition = new JobDefinition(timeEntriesSchedule);
   }
 
-  private _parseUserConfigSchedule(configSchedule): void {
+  private _parseUserConfigSchedule(configSchedule: string): void {
     if (configSchedule.endsWith('*')) {
       // means that every day is chosen, schedule should be same as one of the everySchedules above
       this.confChosenEveryday = true;
@@ -293,10 +293,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     } else {
       // specific day (or more days) are chosen with specific time
       // for example: '45 18 * * mon,thu' [minutes hour * * days]
-      let minutes = configSchedule.substr(0, 2);
-      let hour = configSchedule.substr(3, 2);
-      configSchedule = configSchedule.substr(10, configSchedule.length);
-      let days = configSchedule.split(',');
+      const scheduleSplit = configSchedule.split(' ');
+      let minutes = scheduleSplit[0].padStart(2, '0');
+      let hour = scheduleSplit[1].padStart(2, '0');
+      let days = scheduleSplit[4].split(',');
       // some of the days will be chosen
       this.confChosenMonday = days.includes('mon');
       this.confChosenTuesday = days.includes('tue');
@@ -309,7 +309,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
       this.confEvery = this.everySchedules[0];
       this.showConfEveryDetail = false;
-      this.confAt = `${Number(hour)}:${minutes}`;
+      this.confAt = `${hour}:${minutes}`;
       this.showConfAt = true;
     }
   }
@@ -333,10 +333,10 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     } else {
       // specific day (or more days) are chosen with specific time
       // for example: '45 18 * * mon,thu' [minutes hour * * days]
-      let minutes = timeEntriesSchedule.substr(0, 2);
-      let hour = timeEntriesSchedule.substr(3, 2);
-      timeEntriesSchedule = timeEntriesSchedule.substr(10, timeEntriesSchedule.length);
-      let days = timeEntriesSchedule.split(',');
+      const scheduleSplit = timeEntriesSchedule.split(' ');
+      let minutes = scheduleSplit[0].padStart(2, '0');
+      let hour = scheduleSplit[1].padStart(2, '0');
+      let days = scheduleSplit[4].split(',');
       // some of the days will be chosen
       this.timeEntriesChosenMonday = days.includes('mon');
       this.timeEntriesChosenTuesday = days.includes('tue');
@@ -349,7 +349,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
 
       this.timeEntriesEvery = this.everySchedules[0];
       this.showTimeEntriesEveryDetail = false;
-      this.timeEntriesAt = `${Number(hour)}:${minutes}`;
+      this.timeEntriesAt = `${hour}:${minutes}`;
       this.showTimeEntriesAt = true;
     }
   }
