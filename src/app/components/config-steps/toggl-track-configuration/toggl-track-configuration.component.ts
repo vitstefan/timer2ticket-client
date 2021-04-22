@@ -84,7 +84,9 @@ export class TogglTrackConfigurationComponent implements OnInit, OnDestroy {
     this._syncedServicesConfigService
       .togglTrackWorkspaces(this.serviceDefinition.apiKey)
       .subscribe(data => {
-        this.workspaces = data;
+        this.serviceDefinition.config.userId = data.user_id;
+
+        this.workspaces = data.workspaces;
         if (this.serviceDefinition.config.workspace) {
           this.chosenWorkspace = this.workspaces.find(workspace => workspace.id === this.serviceDefinition.config.workspace.id) ?? null;
         }

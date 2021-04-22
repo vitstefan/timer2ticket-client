@@ -29,11 +29,11 @@ export class SyncedServicesConfigService {
       );
   }
 
-  togglTrackWorkspaces(apiKey: string): Observable<ServiceObject[]> {
+  togglTrackWorkspaces(apiKey: string): Observable<{ user_id: number, workspaces: ServiceObject[] }> {
     console.log("***** SYNCED SERVICES CONFIG ***** Toggl Track workspaces");
     const params = new HttpParams().set('api_key', apiKey);
 
-    return this._http.get<[]>(`${this._syncedServicesConfigApiUrl}/toggl_track_workspaces`,
+    return this._http.get<{ user_id: number, workspaces: ServiceObject[] }>(`${this._syncedServicesConfigApiUrl}/toggl_track_workspaces`,
       { params })
       .pipe(
         catchError((error) => {
