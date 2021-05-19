@@ -230,13 +230,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
           this._jobLogsModal.componentInstance.data = { jobLogs: this.jobLogs, };
         }
       }, (error) => {
-        // TODO provide info about error?
+        // provide info about error? - not needed
       });
     };
 
     // call now
     intervalFunction();
-    // and set interval to call again each 3 seconds
-    this._jobLogsIntervalHandler = setInterval(intervalFunction, 3000);
+    // and set interval to call again each 10 seconds
+    this._jobLogsIntervalHandler = setInterval(intervalFunction, 10000);
   }
 }

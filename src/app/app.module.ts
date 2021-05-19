@@ -27,6 +27,8 @@ import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 import { SyncedServicesConfigService } from './services/synced-services-config.service';
 import { JobService } from './services/job.service';
 import { JobLogsModalComponent } from './components/overview/job-logs/job-logs-modal.component';
+import { MenuComponent } from './components/menu/menu.component';
+import { ChangePasswordComponent } from './components/auth/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { JobLogsModalComponent } from './components/overview/job-logs/job-logs-m
     ScheduleComponent,
     ConfirmationComponent,
     JobLogsModalComponent,
+    MenuComponent,
+    ChangePasswordComponent,
   ],
   imports: [
     CommonModule,

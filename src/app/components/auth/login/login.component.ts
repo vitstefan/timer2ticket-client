@@ -17,7 +17,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     password: ''
   };
   public rememberCredentials: Boolean = true;
-  public displayPassword: Boolean = false;
 
   private $_userSubscription: Subscription;
 

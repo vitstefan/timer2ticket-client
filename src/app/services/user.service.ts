@@ -25,4 +25,21 @@ export class UserService {
         })
       );
   }
+
+  changePassword(userId: string, oldPassword: string, newPassword: string, newPasswordAgain: string): Observable<User> {
+    console.log("***** USER ***** changePassword");
+    return this._http.post<User>(`${this._usersApiUrl}/change_password/${userId}`,
+      {
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+        newPasswordAgain: newPasswordAgain,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error(error);
+          // rethrow status back to the component
+          return throwError(error);
+        })
+      );
+  }
 }

@@ -10,11 +10,7 @@
 <main>
   <header>
     <a [routerLink]='["/overview"]'>Timer2Ticket</a>
-    <div *ngIf="user" class="user-card">
-      <mat-icon fontSet="material-icons-outlined">account_circle</mat-icon>
-      {{ user.username }}
-      (<a [routerLink]='["/logout"]'>Logout</a>)
-    </div>
+    <app-menu *ngIf="user"></app-menu>
   </header>
   <router-outlet></router-outlet>
 </main>

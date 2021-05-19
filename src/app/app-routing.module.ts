@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { ChangePasswordComponent } from './components/auth/change-password/change-password.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { LogoutComponent } from './components/auth/logout/logout.component';
 import { RegistrationComponent } from './components/auth/registration/registration.component';
@@ -22,6 +23,7 @@ const routes = [
   { path: 'config-steps/schedule', component: ScheduleComponent, canActivate: [AuthGuard] },
   { path: 'config-steps/confirmation', component: ConfirmationComponent, canActivate: [AuthGuard] },
   { path: 'overview', component: OverviewComponent, canActivate: [AuthGuard, OverviewGuard] },
+  { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
 
   { path: '**', component: LoginComponent }
 ];

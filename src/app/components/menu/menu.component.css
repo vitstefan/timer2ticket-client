@@ -1,0 +1,76 @@
+/* Reset global button css in styles.css */
+
+button {
+  border-radius: unset;
+  font-family: Montserrat, Arial, Sans Serif;
+  font-size: unset;
+  margin-top: unset;
+  margin-bottom: unset;
+  color: var(--text-color);
+  transition: all .2s linear;
+  padding: unset;
+  min-height: unset;
+  background-color: unset;
+  border: unset;
+  width: unset;
+  height: unset;
+  box-shadow: unset;
+  -moz-box-shadow: unset;
+  -webkit-box-shadow: unset;
+  transition: all .2s linear;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: unset;
+  cursor: pointer;
+  min-height: unset;
+  margin-right: 2rem;
+}
+
+#menu-holder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5em;
+  padding-left: 1.5em;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  padding-right: 5em;
+  background: var(--background);
+}
+
+/* ng-deep to override default Material styles */
+
+::ng-deep .mat-menu-content {
+  background-color: var(--background);
+}
+
+::ng-deep .cdk-overlay-pane .mat-menu-panel {
+  max-width: 90vw;
+}
+
+#menu-holder * {
+  color: var(--text-color);
+}
+
+#menu-holder>* {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+
+#username-container {
+  padding-bottom: 2.5em;
+}
+
+span {
+  font-family: Montserrat, Arial, Sans Serif;
+  font-size: calc(0.8em + 0.6vw);
+}
+
+a span {
+  font-size: calc(0.5em + 0.4vw);
+}

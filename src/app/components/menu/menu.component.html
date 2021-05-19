@@ -1,0 +1,24 @@
+<ng-template #template>
+  <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu" aria-label="Open menu">
+    <mat-icon fontSet="material-icons-outlined">more_horiz</mat-icon>
+  </button>
+  <mat-menu id="mat-menu" #menu="matMenu">
+    <!-- class mat-elevation-z added to unset box-shadow (since it is already positioned in mat-menu) -->
+    <mat-card id="menu-holder" class="mat-elevation-z">
+      <div id="username-container">
+        <div class="centered">
+          <mat-icon fontSet="material-icons-outlined">account_circle</mat-icon>
+        </div>
+        <span><strong>{{ user.username }}</strong></span>
+      </div>
+      <a [routerLink]='["/change-password"]'>
+        <span>Change password</span>
+        <mat-icon fontSet="material-icons-outlined">lock_open</mat-icon>
+      </a>
+      <a [routerLink]='["/logout"]'>
+        <span>Log out</span>
+        <mat-icon fontSet="material-icons-outlined" class="rotate-180-deg">login</mat-icon>
+      </a>
+    </mat-card>
+  </mat-menu>
+</ng-template>
